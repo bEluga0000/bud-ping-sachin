@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Chat application",
+  "version": "1.0.0",
+  "description": "Chat with your buddies",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "icons": {
+    "48": "icon.png"
+  }
+}
