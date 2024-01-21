@@ -1,0 +1,10 @@
+.fields
+{
+    transition: 0.5s;
+
+}
+.fields:hover{
+    background-color: #80BCBD;
+    /* color: whitesmoke; */
+    transform: scale(1.06);
+}
