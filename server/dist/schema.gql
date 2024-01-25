@@ -1,0 +1,22 @@
+input CreateUserInput{
+    username:String!
+    email:String!
+    password:String!
+}
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+  userLink: String!
+  friends: [String!]
+  requests: [String!]
+}
+
+type Query {
+  getUser(id: ID!): User
+}
+
+type Mutation{
+    CreateUser(input:CreateUserInput):User!
+}
