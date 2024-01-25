@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { AddFriendInputProps } from "../types/typesPrisma";
+import { FriendInputProps, RequestProps } from "../types/typesPrisma";
 import { createRoom } from "./create";
 const prisma =new PrismaClient()
 
-export const addFriend = async(input:AddFriendInputProps)=>{
+export const addFriend = async(input:FriendInputProps)=>{
     const user1 = await prisma.user.findUnique({
         where:{
             id:input.user1Id,
@@ -14,14 +14,18 @@ export const addFriend = async(input:AddFriendInputProps)=>{
             id:input.user2Id
         },
     })
-    
     if(user1 && user2){
+        const updatedRequested1 = user1.requests.filter((id)=> id!==input.user2Id)
+        const updatedRequested2 = user2.requests.filter((id) => id !== input.user1Id)
         const updatedUser1 = await prisma.user.update({
             where: {
                 id: input.user1Id
             },
             data: {
-                friends: [...user1.friends, input.user2Id]
+                friends: [...user1.friends, input.user2Id],
+                requests:{
+                    set:updatedRequested1
+                }
             }
         })
         const updatedUser2 = await prisma.user.update({
@@ -29,7 +33,8 @@ export const addFriend = async(input:AddFriendInputProps)=>{
                 id:input.user2Id
             },
             data:{
-                friends:[...user2.friends,input.user1Id]
+                friends:[...user2.friends,input.user1Id],
+                requests:{set:updatedRequested2}
             }
 
         })
@@ -42,5 +47,75 @@ export const addFriend = async(input:AddFriendInputProps)=>{
     
 } 
 
-// addFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id:"clrrupm77000046gexb5qc96i"})
+export const removeFriend = async(input:FriendInputProps)=>{
+    // todo need to optimise the code if possible directly from the prisma do else we can optimise like this like getuser FUnction and fileter function and may more which are repeated more
+    
+    const user1 = await prisma.user.findUnique({
+        where: {
+            id: input.user1Id,
+        },
+    })
+    const user2 = await prisma.user.findUnique({
+        where: {
+            id: input.user2Id
+        },
+    })
+    if(user2&& user1)
+    {
+        const updatedUser1Friends = user1.friends.filter((id)=>{id!==input.user2Id})
+        const updatedUser2Friends = user1.friends.filter((id)=>{id!==input.user1Id})
+        // removing the friends
+        const updatedUser1 = await prisma.user.update({
+            where: {
+                id: input.user1Id
+            },
+            data: {
+                friends: {set:updatedUser1Friends}
+            }
+        })
+        const updatedUser2 = await prisma.user.update({
+            where:{
+                id:input.user2Id
+            },
+            data:{
+                friends:{set:updatedUser2Friends}
+            }
+        })
+        //deleting the rooms
+        const room = await prisma.room.deleteMany({
+            where:{
+                subscribedUser:{
+                    some:{
+                        id:{
+                            in:[input.user1Id,input.user2Id]
+                        }
+                    }
+                }
+            }
+        })
+        console.log(updatedUser2,updatedUser1,room)
 
+    }
+    
+}
+export const setRequests = async(inputs:RequestProps)=>{
+    const toUser = await prisma.user.findUnique({
+        where:{
+            id:inputs.toId
+        }
+    })
+    if(toUser)
+    {
+        const updateUser = await prisma.user.update({
+            where:{
+                id:inputs.toId
+            },data:{
+                requests:[...toUser.requests,inputs.fromId]
+            }
+        })
+        console.log(updateUser)
+    }
+    
+} 
+// addFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id:"clrrupm77000046gexb5qc96i"})
+// removeFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id: "clrrupm77000046gexb5qc96i" })

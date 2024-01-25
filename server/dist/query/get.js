@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllRooms = exports.getAllUser = exports.getUser = void 0;
+exports.getAllRooms = exports.getAllUser = exports.getRoom = exports.getUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,6 +27,22 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const getRoom = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const room1 = yield prisma.room.findUnique({
+        where: {
+            id
+        },
+        include: {
+            subscribedUser: {
+                select: {
+                    username: true
+                }
+            }
+        }
+    });
+    console.log(room1);
+});
+exports.getRoom = getRoom;
 const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
     const users = yield prisma.user.findMany({
         include: {
@@ -39,15 +55,21 @@ exports.getAllUser = getAllUser;
 const getAllRooms = () => __awaiter(void 0, void 0, void 0, function* () {
     const rooms = yield prisma.room.findMany({
         include: {
-            subscribedUser: true
+            subscribedUser: {
+                select: {
+                    username: true
+                }
+            }
         }
     });
-    console.log(rooms);
+    // return { paper, question: (paper as any).questions }
+    console.log(rooms.subscribedUser, rooms);
 });
 exports.getAllRooms = getAllRooms;
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
-(0, exports.getAllUser)();
+// getAllUser()
 (0, exports.getAllRooms)();
+(0, exports.getRoom)('1d24522b-9151-4c3f-8f11-3a459b217f32');
 // users
 // [
 //     {

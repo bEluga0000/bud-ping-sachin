@@ -37,6 +37,3 @@ model Message {
   roomIn   Room @relation(fields: [roomId], references: [id])
   userSent User @relation(fields: [sentBy], references: [id])
 }
-model name{
-  id String @id
-}

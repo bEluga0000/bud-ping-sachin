@@ -28,7 +28,7 @@ export const getRoom = async(id:string)=>{
             }
         }
     })
-    // console.log(room1?.subscribedUser)
+    console.log(room1)
 }
 export const getAllUser = async()=>{
     const users = await prisma.user.findMany({
@@ -41,14 +41,20 @@ export const getAllUser = async()=>{
 export const getAllRooms = async()=>{
     const rooms = await prisma.room.findMany({
         include:{
-            subscribedUser:true,
+            subscribedUser:{
+                select:{
+                    username:true
+                }
+            }
         }
     })
-    console.log(rooms)
+    // return { paper, question: (paper as any).questions }
+    console.log((rooms as any).subscribedUser,rooms)
 }
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
-getAllUser()
+// getAllUser()
 getAllRooms()
+getRoom('1d24522b-9151-4c3f-8f11-3a459b217f32')
 
 // users
 // [
