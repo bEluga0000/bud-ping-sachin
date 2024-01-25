@@ -53,8 +53,8 @@ export const getAllRooms = async()=>{
 }
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
 // getAllUser()
-getAllRooms()
-getRoom('1d24522b-9151-4c3f-8f11-3a459b217f32')
+// getAllRooms()
+// getRoom('1d24522b-9151-4c3f-8f11-3a459b217f32')
 
 // users
 // [

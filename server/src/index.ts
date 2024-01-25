@@ -5,8 +5,11 @@ import * as path from 'path'
 import {graphqlHTTP} from 'express-graphql'
 import {buildSchema} from 'graphql'
 import { root } from "./resolver"
+import {  friendVars, requestVars } from "./zod/variable"
+import { addFriend, removeFriend, setRequests } from "./query/update"
 
 const app = express()
+app.use(express.json())
 const fs = require('fs')
 const server = http.createServer(app)
 const PORT = port || 3000
@@ -22,6 +25,69 @@ app.use('/graphql',graphqlHTTP({
 }))
 app.get('/',(req,res)=>{
     res.json({message:"Welcome u loser"})
+})
+app.post("/addFriend",async(req,res)=>{
+    const parsedInputs = friendVars.safeParse(req.body)
+    if(!parsedInputs.success)
+    {
+        res.status(401).json({message:"Enter valid Inputs"})
+    }
+    else
+    {
+        const {user1Id,user2Id} = parsedInputs.data
+        const room = await addFriend({user1Id,user2Id})
+        if( room)
+        {
+            res.status(200).json({room})
+        }
+        else
+        {
+            res.status(403).json({message:"There is a error in adding in room"})
+        }
+    }
+})
+
+// ? while hitting this route remeber were getting the room.count if it 1 room delted if 0 then room not found
+app.patch("/removeFriend",async(req,res)=>{
+    const parsedInputs = friendVars.safeParse(req.body)
+    if(!parsedInputs.success)
+    {
+        res.status(401).json({message:'Enter valid inputs'})
+    }
+    else
+    {
+        const {user1Id,user2Id} = parsedInputs.data
+        const room = await removeFriend({user1Id,user2Id})
+        if(room)
+        {
+            res.status(201).json({room})
+        }
+        else
+        {
+            res.status(403).json({message:"error in removing friend"})
+        }
+    }
+})
+
+app.post("/sendRequest",async(req,res)=>{
+    const parsedInputs = requestVars.safeParse(req.body)
+    if(!parsedInputs.success)
+    {
+        res.status(403).json({message:"Enter the valid inputs"})
+    }
+    else
+    {
+        const{fromId,toId} = parsedInputs.data
+        const updatedUser = await setRequests({fromId,toId})
+        if(updatedUser)
+        {
+            res.status(200).json({updatedUser})
+        }
+        else
+        {
+            res.status(401).json({message:"Error in sending requests"})
+        }
+    }
 })
 
 server.listen(PORT,()=>{

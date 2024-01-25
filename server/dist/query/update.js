@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeFriend = exports.addFriend = void 0;
+exports.setRequests = exports.removeFriend = exports.addFriend = void 0;
 const client_1 = require("@prisma/client");
 const create_1 = require("./create");
 const prisma = new client_1.PrismaClient();
@@ -25,12 +25,17 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     if (user1 && user2) {
+        const updatedRequested1 = user1.requests.filter((id) => id !== input.user2Id);
+        const updatedRequested2 = user2.requests.filter((id) => id !== input.user1Id);
         const updatedUser1 = yield prisma.user.update({
             where: {
                 id: input.user1Id
             },
             data: {
-                friends: [...user1.friends, input.user2Id]
+                friends: [...user1.friends, input.user2Id],
+                requests: {
+                    set: updatedRequested1
+                }
             }
         });
         const updatedUser2 = yield prisma.user.update({
@@ -38,7 +43,8 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
                 id: input.user2Id
             },
             data: {
-                friends: [...user2.friends, input.user1Id]
+                friends: [...user2.friends, input.user1Id],
+                requests: { set: updatedRequested2 }
             }
         });
         const room = yield (0, create_1.createRoom)({ user1Id: updatedUser1.id, user2Id: updatedUser2.id });
@@ -50,7 +56,7 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.addFriend = addFriend;
 const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
-    // todo need to optimise the code 
+    // todo need to optimise the code if possible directly from the prisma do else we can optimise like this like getuser FUnction and fileter function and may more which are repeated more
     const user1 = yield prisma.user.findUnique({
         where: {
             id: input.user1Id,
@@ -94,8 +100,35 @@ const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         console.log(updatedUser2, updatedUser1, room);
+        return room;
     }
 });
 exports.removeFriend = removeFriend;
+const setRequests = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
+    const toUser = yield prisma.user.findUnique({
+        where: {
+            id: inputs.toId
+        }
+    });
+    const alreadyRequested = toUser === null || toUser === void 0 ? void 0 : toUser.requests.includes(inputs.fromId);
+    if (alreadyRequested) {
+        console.log("error is because of me");
+        return null;
+    }
+    else {
+        if (toUser) {
+            const updatedUser = yield prisma.user.update({
+                where: {
+                    id: inputs.toId
+                }, data: {
+                    requests: [...toUser.requests, inputs.fromId]
+                }
+            });
+            console.log(updatedUser);
+            return updatedUser;
+        }
+    }
+});
+exports.setRequests = setRequests;
 // addFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id:"clrrupm77000046gexb5qc96i"})
-(0, exports.removeFriend)({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id: "clrrupm77000046gexb5qc96i" });
+// removeFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id: "clrrupm77000046gexb5qc96i" })

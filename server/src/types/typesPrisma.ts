@@ -12,6 +12,6 @@ export interface RoomInputsProps{
     user2Id: string
 }
 export interface RequestProps{
-    from:string
-    to:string
+    fromId:string
+    toId:string
 }

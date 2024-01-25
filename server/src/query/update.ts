@@ -94,6 +94,7 @@ export const removeFriend = async(input:FriendInputProps)=>{
             }
         })
         console.log(updatedUser2,updatedUser1,room)
+        return room
 
     }
     
@@ -104,17 +105,27 @@ export const setRequests = async(inputs:RequestProps)=>{
             id:inputs.toId
         }
     })
-    if(toUser)
+    const alreadyRequested = toUser?.requests.includes(inputs.fromId)
+    if(alreadyRequested)
     {
-        const updateUser = await prisma.user.update({
-            where:{
-                id:inputs.toId
-            },data:{
-                requests:[...toUser.requests,inputs.fromId]
-            }
-        })
-        console.log(updateUser)
+        console.log("error is because of me")
+        return null
     }
+    else
+    {
+        if (toUser) {
+            const updatedUser = await prisma.user.update({
+                where: {
+                    id: inputs.toId
+                }, data: {
+                    requests: [...toUser.requests, inputs.fromId]
+                }
+            })
+            console.log(updatedUser)
+            return updatedUser
+        }
+    }
+    
     
 } 
 // addFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id:"clrrupm77000046gexb5qc96i"})
