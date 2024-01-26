@@ -22,6 +22,12 @@ exports.root = {
             throw new Error("User not found");
         }
     }),
+    getRoom: ({ id }, req) => __awaiter(void 0, void 0, void 0, function* () {
+        const { room, subscribedUsers, messages } = yield (0, get_1.getRoom)(id);
+        if (room && subscribedUsers && messages) {
+            return { id: room.id, subscribedAt: room.subscribedAt, subscribedUser: subscribedUsers, messages: messages };
+        }
+    }),
     CreateUser: ({ input }, req) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(1);
         const user = yield (0, create_1.createUser)({ username: input.username, password: input.username, email: input.email });

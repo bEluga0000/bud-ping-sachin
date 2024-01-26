@@ -1,7 +1,21 @@
 input CreateUserInput {
   username: String!
   email: String!
-  password: string!
+  password: String!
+}
+type Room{
+  id:ID!
+  subscribedAt:String!
+  subscribedUser:[User!]!
+  messages:[Message!]
+
+}
+type Message{
+  id:ID!
+  msg:String!
+  time:String!
+  sentBy:String!
+  roomId:String!
 }
 type User {
   id: ID!
@@ -14,6 +28,7 @@ type User {
 }
 type Query {
   getUser(id: ID!): User
+  getRoom(id:ID!):Room
 }
 
 type Mutation {

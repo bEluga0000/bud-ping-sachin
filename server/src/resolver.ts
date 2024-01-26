@@ -1,5 +1,6 @@
+import { string } from "zod"
 import { createUser } from "./query/create"
-import { getUser } from "./query/get"
+import { getRoom, getUser } from "./query/get"
 import { UserInputProps } from "./types/typesPrisma"
 export const root = {
     getUser:async({id}:{id:string},req:any)=>{
@@ -11,6 +12,13 @@ export const root = {
         else
         {
             throw new Error("User not found")
+        }
+    },
+    getRoom:async({id}:{id:string},req:any)=>{
+        const {room,subscribedUsers,messages} = await getRoom(id)
+        if(room && subscribedUsers && messages)
+        {
+            return { id: room.id, subscribedAt: room.subscribedAt, subscribedUser:subscribedUsers,messages:messages}
         }
     },
     CreateUser: async({ input }:{ input:UserInputProps},req:any)=>{

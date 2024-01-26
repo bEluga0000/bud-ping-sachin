@@ -28,19 +28,17 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getUser = getUser;
 const getRoom = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const room1 = yield prisma.room.findUnique({
+    const room = yield prisma.room.findUnique({
         where: {
             id
         },
         include: {
-            subscribedUser: {
-                select: {
-                    username: true
-                }
-            }
+            subscribedUser: true,
+            messages: true
         }
     });
-    console.log(room1);
+    // console.log(room)
+    return { room: room, subscribedUsers: room.subscribedUser, messages: room.messages };
 });
 exports.getRoom = getRoom;
 const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,7 +67,7 @@ exports.getAllRooms = getAllRooms;
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
 // getAllUser()
 // getAllRooms()
-// getRoom('1d24522b-9151-4c3f-8f11-3a459b217f32')
+// getRoom('46614326-c6e6-4520-93d2-9ed558de5319')
 // users
 // [
 //     {
