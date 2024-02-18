@@ -1,13 +1,13 @@
 import { Typography } from "@mui/material";
 import {  UserRoundPlus } from "lucide-react";
 
-export default function SingleRequest(){
+export default function SingleRequest({username,id}:{username:string,id:string}){
     return(
         <div>
             <div style={{ display: "flex", justifyContent: "space-between", paddingRight: "1rem",gap:"1rem" }}>
                 <div>
                     <div style={{ cursor: "pointer" }}>
-                        <Typography variant="h4">Username</Typography>
+                        <Typography variant="h4">{username}</Typography>
                     </div>
 
                     <Typography>{32} Mutual</Typography>
@@ -16,7 +16,7 @@ export default function SingleRequest(){
                     <button style={{
                         background: "none", alignItems: "center", cursor: "pointer",
                         border: "none", borderRadius: "10px", padding: ".3rem 1rem", display: "flex", gap: ".3rem", backgroundColor: "#294B29", color:"#DBE7C9"
-                    }}>
+                    }} id={id}>
                         <Typography fontSize={"20px"} ><UserRoundPlus /></Typography>
                         {/* <Typography variant="h6">Add Friend</Typography> */}
                     </button>

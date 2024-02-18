@@ -8,7 +8,7 @@ export default function User()
     return(
         <div style={{ display: "flex", flexDirection: "column" ,height:"100vh"}} >
             <div>
-                <NavBar/>
+                <NavBar username="Loser"/>
                 <hr />
             </div>
             
