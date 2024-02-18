@@ -39,18 +39,25 @@ const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const config_1 = require("./config");
 const path = __importStar(require("path"));
+const ws_1 = require("ws");
 const express_graphql_1 = require("express-graphql");
 const graphql_1 = require("graphql");
 const resolver_1 = require("./resolver");
 const variable_1 = require("./zod/variable");
 const update_1 = require("./query/update");
+const wsConnection_1 = require("./ws/wsConnection");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const fs = require('fs');
 const server = http_1.default.createServer(app);
 const PORT = config_1.port || 3000;
+const wss = new ws_1.WebSocketServer({ server });
 const schemaString = fs.readFileSync(path.join(__dirname, './schema.gql'), 'utf-8');
 const schema = (0, graphql_1.buildSchema)(schemaString);
+wss.on('connection', (ws, req) => {
+    ws.send("connected sucessfully");
+    (0, wsConnection_1.wsOnconnection)(ws, req);
+});
 app.use('/graphql', (0, express_graphql_1.graphqlHTTP)({
     schema,
     rootValue: resolver_1.root,
@@ -75,7 +82,7 @@ app.post("/addFriend", (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 }));
-// ? while hitting this route remeber were getting the room.count if it 1 room delted if 0 then room not found
+// ? while hitting this route remeber were getting the room.count if it 1 room delted, if 0 then room not found
 app.patch("/removeFriend", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsedInputs = variable_1.friendVars.safeParse(req.body);
     if (!parsedInputs.success) {
@@ -112,4 +119,5 @@ server.listen(PORT, () => {
     console.log("Welcome to Bud-Ping here is your list of servers running");
     console.log(`Main:-  http://localhost:${PORT}`);
     console.log(`Graphql server : http://localhost:${PORT}/graphql`);
+    console.log(`websocket :- ws://localhost:${PORT}`);
 });

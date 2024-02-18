@@ -4,12 +4,19 @@ export const getUser = async (id:string)=>{
     const user =await prisma.user.findUnique({
         where:{
             id
+        },
+        include:{
+            rooms:{
+                include:{
+                    subscribedUser:true
+                }
+            }
         }
     })
     if(user)
     {
-        console.log(user)
-        return user
+        // console.log(user)
+        return {user,room:(user as any).rooms}
     }
     else{
         return null
@@ -29,6 +36,38 @@ export const getRoom = async(id:string)=>{
     // console.log(room)
     return { room: room, subscribedUsers: (room as any).subscribedUser, messages: (room as any).messages}
 
+}
+export const getSuggestionUsers = async({id}:{id:string})=>{
+    try{
+        const user = await prisma.user.findUnique({
+            where: {
+                id
+            }
+        })
+        if (!user) {
+            throw new Error ("No user with this id")
+        }
+        const friendsforSuggestion = await prisma.user.findMany({
+            where:{
+                id:{
+                    notIn:[...user.friends,...user.requests,user.id]
+                }
+            }
+        })
+        if(friendsforSuggestion.length === 0)
+        {
+            return null
+        }
+        console.log("I ma runningjskdhaj")
+        console.log(friendsforSuggestion)
+        return friendsforSuggestion;
+    }
+    catch(e)
+    {
+        // console.log(e)
+        return null
+    }
+    
 }
 export const getAllUser = async()=>{
     const users = await prisma.user.findMany({
@@ -51,9 +90,10 @@ export const getAllRooms = async()=>{
     // return { paper, question: (paper as any).questions }
     console.log((rooms as any).subscribedUser,rooms)
 }
+// getSuggestionUsers({id:"clrrrzkww0000wbfj5sjr7sv4"})
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
 // getAllUser()
-// getAllRooms()
+getAllRooms()
 // getRoom('46614326-c6e6-4520-93d2-9ed558de5319')
 
 // users

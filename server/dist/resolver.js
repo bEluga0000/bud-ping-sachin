@@ -14,9 +14,11 @@ const create_1 = require("./query/create");
 const get_1 = require("./query/get");
 exports.root = {
     getUser: ({ id }, req) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield (0, get_1.getUser)(id);
-        if (user) {
-            return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends, requests: user.requests };
+        const userFull = yield (0, get_1.getUser)(id);
+        if (userFull) {
+            const user = userFull.user;
+            const room = userFull.room;
+            return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends, requests: user.requests, room: room };
         }
         else {
             throw new Error("User not found");
@@ -26,6 +28,12 @@ exports.root = {
         const { room, subscribedUsers, messages } = yield (0, get_1.getRoom)(id);
         if (room && subscribedUsers && messages) {
             return { id: room.id, subscribedAt: room.subscribedAt, subscribedUser: subscribedUsers, messages: messages };
+        }
+    }),
+    getAllUser: ({ id }, req) => __awaiter(void 0, void 0, void 0, function* () {
+        const users = yield (0, get_1.getSuggestionUsers)({ id });
+        if (users) {
+            return { user: users };
         }
     }),
     CreateUser: ({ input }, req) => __awaiter(void 0, void 0, void 0, function* () {

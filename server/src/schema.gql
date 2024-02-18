@@ -25,10 +25,12 @@ type User {
   userLink: String!
   friends: [String!]
   requests: [String!]
+  room:[Room!]
 }
 type Query {
   getUser(id: ID!): User
   getRoom(id:ID!):Room
+  getAllUser(id:ID!):[User!]
 }
 
 type Mutation {

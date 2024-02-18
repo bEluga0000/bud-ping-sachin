@@ -15,3 +15,8 @@ export interface RequestProps{
     fromId:string
     toId:string
 }
+export interface StoreMessageProps{
+    roomId:string
+    msg:string
+    sentId:string
+}

@@ -48,9 +48,9 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         const room = yield (0, create_1.createRoom)({ user1Id: updatedUser1.id, user2Id: updatedUser2.id });
-        console.log(room);
-        console.log(updatedUser1);
-        console.log(updatedUser2.friends, updatedUser2.id);
+        // console.log(room)
+        // console.log(updatedUser1)
+        // console.log(updatedUser2.friends,updatedUser2.id)
         return room;
     }
 });
@@ -69,7 +69,7 @@ const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
     });
     if (user2 && user1) {
         const updatedUser1Friends = user1.friends.filter((id) => { id !== input.user2Id; });
-        const updatedUser2Friends = user1.friends.filter((id) => { id !== input.user1Id; });
+        const updatedUser2Friends = user2.friends.filter((id) => { id !== input.user1Id; });
         // removing the friends
         const updatedUser1 = yield prisma.user.update({
             where: {
@@ -99,7 +99,7 @@ const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
                 }
             }
         });
-        console.log(updatedUser2, updatedUser1, room);
+        // console.log(updatedUser2,updatedUser1,room)
         return room;
     }
 });
@@ -124,7 +124,7 @@ const setRequests = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
                     requests: [...toUser.requests, inputs.fromId]
                 }
             });
-            console.log(updatedUser);
+            // console.log(updatedUser)
             return updatedUser;
         }
     }
