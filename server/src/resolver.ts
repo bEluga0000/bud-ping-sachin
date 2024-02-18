@@ -1,13 +1,15 @@
 import { string } from "zod"
 import { createUser } from "./query/create"
-import { getRoom, getUser } from "./query/get"
+import { getRoom, getSuggestionUsers, getUser } from "./query/get"
 import { UserInputProps } from "./types/typesPrisma"
 export const root = {
     getUser:async({id}:{id:string},req:any)=>{
-        const user = await getUser(id)
-        if(user)
+        const userFull = await getUser(id)
+        if(userFull)
         {
-            return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends,requests:user.requests}
+            const user = userFull.user
+            const room = userFull.room
+            return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends,requests:user.requests,room:room}
         }
         else
         {
@@ -19,6 +21,13 @@ export const root = {
         if(room && subscribedUsers && messages)
         {
             return { id: room.id, subscribedAt: room.subscribedAt, subscribedUser:subscribedUsers,messages:messages}
+        }
+    },
+    getAllUser:async({id}:{id:string},req:any)=>{
+        const users = await getSuggestionUsers({id})
+        if(users)
+        {
+            return {user:users}
         }
     },
     CreateUser: async({ input }:{ input:UserInputProps},req:any)=>{

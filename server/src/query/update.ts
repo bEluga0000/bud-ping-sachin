@@ -39,9 +39,9 @@ export const addFriend = async(input:FriendInputProps)=>{
 
         })
         const room = await createRoom({user1Id:updatedUser1.id,user2Id:updatedUser2.id})
-        console.log(room)
-        console.log(updatedUser1)
-        console.log(updatedUser2.friends,updatedUser2.id)
+        // console.log(room)
+        // console.log(updatedUser1)
+        // console.log(updatedUser2.friends,updatedUser2.id)
         return room
     }
     
@@ -63,7 +63,7 @@ export const removeFriend = async(input:FriendInputProps)=>{
     if(user2&& user1)
     {
         const updatedUser1Friends = user1.friends.filter((id)=>{id!==input.user2Id})
-        const updatedUser2Friends = user1.friends.filter((id)=>{id!==input.user1Id})
+        const updatedUser2Friends = user2.friends.filter((id)=>{id!==input.user1Id})
         // removing the friends
         const updatedUser1 = await prisma.user.update({
             where: {
@@ -93,7 +93,7 @@ export const removeFriend = async(input:FriendInputProps)=>{
                 }
             }
         })
-        console.log(updatedUser2,updatedUser1,room)
+        // console.log(updatedUser2,updatedUser1,room)
         return room
 
     }
@@ -121,12 +121,11 @@ export const setRequests = async(inputs:RequestProps)=>{
                     requests: [...toUser.requests, inputs.fromId]
                 }
             })
-            console.log(updatedUser)
+            // console.log(updatedUser)
             return updatedUser
         }
     }
-    
-    
 } 
+
 // addFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id:"clrrupm77000046gexb5qc96i"})
 // removeFriend({ user1Id: "clrrrzkww0000wbfj5sjr7sv4", user2Id: "clrrupm77000046gexb5qc96i" })

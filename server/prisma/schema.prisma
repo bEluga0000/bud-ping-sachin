@@ -31,7 +31,7 @@ model Room {
 model Message {
   id       String @id @default (cuid())
   msg      String
-  time     DateTime
+  time     DateTime @default(now())
   sentBy   String
   roomId   String
   roomIn   Room @relation(fields: [roomId], references: [id])
