@@ -6,10 +6,12 @@ interface MessageProps {
     id: string
     time: string
     msg: string
+    sentBy:string
 }
 export default function ChatSection({messsage}:{messsage:MessageProps[]})
 {
     const currentUserId = useRecoilValue(userIdState)
+    console.log(currentUserId)
     if (messsage.length === 0) {
         return <div style={{ overflowY: "scroll" }} className={style.room}> 
         <Typography >Say Hello to ur buddy</Typography>
@@ -19,7 +21,7 @@ export default function ChatSection({messsage}:{messsage:MessageProps[]})
         <div style={{display:"flex",flexDirection:"column"}}>
             {
                 messsage.map((msg) => {
-                    if(msg.id === currentUserId)
+                    if (msg.sentBy === currentUserId)
                     {
                         return <div className={`${style.message} ${style.sent}`} style={{ border: "1px solid black" }}>
                             <p className={`${style.messageText} `}>{msg.msg}</p>

@@ -3,6 +3,9 @@ import style from "../styles/allPages.module.css"
 import { useEffect, useState } from "react";
 import { chain } from "../consfig";
 import { CircularProgress } from "@mui/material";
+import { useRecoilValue } from "recoil";
+import { userIdState } from "../store/selector/userselector";
+import LandingPage from "../pages/LandingPage";
 interface SubscribedUserProps
 {
     username:string
@@ -14,15 +17,20 @@ interface RoomsProps{
 }
 export default function ChatList()
 {
+    const currentUserId = useRecoilValue(userIdState)
     const [username,setUsername] = useState<string>("")
     const [isLoading,setIsLoading] = useState<boolean>(false)
     const [rooms,setRooms]  = useState<RoomsProps[]>([])
+    if(!currentUserId)
+    {
+        return <LandingPage/>
+    }
     useEffect(() => {
-        const init = async (id: string) => {
+        const init = async () => {
             setIsLoading(true)
             const user = await chain("query")({
                 getUser: [{
-                    id
+                    id:currentUserId
                 }, {
                     id: true,
                     username: true,
@@ -46,7 +54,7 @@ export default function ChatList()
             }
             setIsLoading(false)
         }
-        init("clrrrzkww0000wbfj5sjr7sv4");
+        init();
     }, [])
     if(isLoading)
     {
@@ -62,23 +70,6 @@ export default function ChatList()
                 })
             }
             
-            {/* <SingleChat/>
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat/>
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat />
-            <SingleChat /> */}
         </div>
     )
 }

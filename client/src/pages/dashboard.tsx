@@ -18,8 +18,6 @@ export default function Dashboard()
     const chatSection = useRecoilValue(isChatSection)
     const frSection  = useRecoilValue(isFrSection)
     const friendsSection = useRecoilValue(isFriendsSection)
-    const [requests,setRequests] = useState<string[]|undefined>([])
-    const [friends,setFriends] = useState<string[]|undefined>([])
     const setCurrentUserState = useSetRecoilState(userState)
     useEffect(()=>{
         const init = async(id:string)=>{
@@ -30,16 +28,10 @@ export default function Dashboard()
                 },{
                     id:true,
                     username:true,
-                    requests:true,
-                    friends:true
                 }]
             })
             if(oneuser.getUser)
             {
-                // setUser(oneuser)
-                console.log(oneuser)
-                setRequests(oneuser.getUser.requests)
-                setFriends(oneuser.getUser.friends)
                 setUsername(oneuser.getUser.username)
                 setCurrentUserState({
                     username:oneuser.getUser.username,
@@ -48,8 +40,12 @@ export default function Dashboard()
             }
             setIsLoading(false)
         }
-        init("clrrrzkww0000wbfj5sjr7sv4");
+        // Jhonson
+        // init("clrrupm77000046gexb5qc96i");
+        // Sachin
+        init("clrrrzkww0000wbfj5sjr7sv4") 
     },[])
+    
     if(isLoading)
     {
         return <CircularProgress/>
@@ -68,10 +64,10 @@ export default function Dashboard()
                     chatSection && <ChatList />
                 }
                 {
-                    frSection && <Requests requests={requests}/> 
+                    frSection && <Requests/> 
                 }
                 {
-                    friendsSection && <FriendsList friends={friends}/>
+                    friendsSection && <FriendsList/>
                 }
                 {/* <ChatList/> */}
                 {/* <Requests/> */}

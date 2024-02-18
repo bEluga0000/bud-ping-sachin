@@ -1,6 +1,7 @@
 import { CircularProgress, Typography } from "@mui/material";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 // import AppBar from "../components/appBar";
 import ChatSection from "../components/chatSection";
@@ -15,8 +16,10 @@ interface MessageProps {
     id: string
     time: string
     msg: string
+    sentBy:string
 }
 export default function Chat() {
+    const navigate = useNavigate()
     const [roomName, setRoomName] = useState<string>("")
     const [roomId, setRoomId] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
@@ -37,7 +40,8 @@ export default function Chat() {
                     messages: {
                         id: true,
                         time: true,
-                        msg: true
+                        msg: true,
+                        sentBy:true,
                     }
                 }]
             })
@@ -61,20 +65,27 @@ export default function Chat() {
         return <CircularProgress />
     }
     return (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column"}}>
             <div>
                 {
                     currentUsername &&
                     <NavBar username={currentUsername} />
                 }
-                <hr />
             </div>
-            <div id={roomId} style={{ height: "90vh", backgroundColor:"#B5C0D0"}}>
-                <div style={{ display: "flex", alignItems: "center", width: "100wh" }}>
-                    <div style={{ minWidth: "80%", textAlign: "center" }}>
+            <hr style={{padding:"0px",margin:"0px"}}/>
+            <div id={roomId} style={{ height: "90vh", backgroundColor: "#F5F7F8" }} >
+                <div style={{ display: "flex", alignItems: "center",justifyContent:"space-between", width: "100wh" }}>
+                    <div style={{textAlign: "left", paddingLeft: ".3rem" ,cursor:"pointer"}}
+                        onClick={()=>{
+                            navigate("/dashboard")
+                        }}
+                    >
+                        <ArrowLeft />
+                    </div>
+                    <div style={{ textAlign: "center" }}>
                         <Typography variant="h4">{roomName}</Typography>
                     </div>
-                    <div style={{ width: "20%", textAlign: "right", paddingRight: ".3rem" }}>
+                    <div style={{ textAlign: "right", paddingRight: ".3rem" }}>
                         <VerticalOptions />
                     </div>
                 </div>
