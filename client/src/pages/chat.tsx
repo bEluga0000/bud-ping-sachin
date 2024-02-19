@@ -9,23 +9,66 @@ import ChatSend from "../components/chatSend";
 import NavBar from "../components/navBar";
 // import { MoreVertical } from "lucide-react";
 import VerticalOptions from "../components/verticalOptions";
-import { chain } from "../consfig";
-import { usernameState } from "../store/selector/userselector";
+import { chain, WS_URL } from "../consfig";
+import { userIdState, usernameState } from "../store/selector/userselector";
 import style from "../styles/allPages.module.css";
 interface MessageProps {
-    id: string
     time: string
     msg: string
-    sentBy:string
+    sentBy: string
+}
+interface WebsocketMsgProps {
+    type: string
+    payload: MessageProps
 }
 export default function Chat() {
     const navigate = useNavigate()
+    const currentUserId = useRecoilValue(userIdState)
     const [roomName, setRoomName] = useState<string>("")
     const [roomId, setRoomId] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
     const [messages, setMessages] = useState<MessageProps[]>([])
     const currentUsername = useRecoilValue(usernameState)
     const { roomIds } = useParams()
+    const [websocket, setWebsocket] = useState<WebSocket | null>(null)
+    // making the ws connection
+    useEffect(() => {
+        if (!websocket) {
+            const ws = new WebSocket(`${WS_URL}`)
+            if (currentUserId) {
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({
+                        type: "join",
+                        payload: {
+                            id: currentUserId,
+                            roomId: roomIds
+                        }
+                    }))
+                }
+                ws.onmessage = (event) => {
+                    const data: WebsocketMsgProps = JSON.parse(event.data)
+                    if (data.type === 'message') {
+                        setMessages((prevMessages) => [...prevMessages, data.payload])
+                        return data.payload
+                    }
+                }
+                setWebsocket(ws)
+            }
+
+            return () => {
+
+                ws.close()
+                ws.send(JSON.stringify({
+                    type: "exit",
+                    payload: {
+                        id: currentUserId,
+                        roomId: roomIds
+                    }
+                }))
+            }
+        }
+
+    }, [roomId, currentUserId])
     useEffect(() => {
         const init = async (id: string) => {
             setLoading(true)
@@ -38,10 +81,9 @@ export default function Chat() {
                         username: true
                     },
                     messages: {
-                        id: true,
                         time: true,
                         msg: true,
-                        sentBy:true,
+                        sentBy: true,
                     }
                 }]
             })
@@ -65,18 +107,18 @@ export default function Chat() {
         return <CircularProgress />
     }
     return (
-        <div style={{ display: "flex", flexDirection: "column"}}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
                 {
                     currentUsername &&
                     <NavBar username={currentUsername} />
                 }
             </div>
-            <hr style={{padding:"0px",margin:"0px"}}/>
+            <hr style={{ padding: "0px", margin: "0px" }} />
             <div id={roomId} style={{ height: "90vh", backgroundColor: "#F5F7F8" }} >
-                <div style={{ display: "flex", alignItems: "center",justifyContent:"space-between", width: "100wh" }}>
-                    <div style={{textAlign: "left", paddingLeft: ".3rem" ,cursor:"pointer"}}
-                        onClick={()=>{
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100wh" }}>
+                    <div style={{ textAlign: "left", paddingLeft: ".3rem", cursor: "pointer" }}
+                        onClick={() => {
                             navigate("/dashboard")
                         }}
                     >
@@ -93,7 +135,7 @@ export default function Chat() {
                     <ChatSection messsage={messages} />
                 </div>
                 <div style={{ width: "100wh", height: "7%", marginBottom: "1%" }}>
-                    <ChatSend />
+                    <ChatSend ws={websocket} roomId={roomIds} />
                 </div>
 
             </div>

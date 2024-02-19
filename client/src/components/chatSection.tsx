@@ -3,7 +3,6 @@ import { useRecoilValue } from "recoil"
 import { userIdState } from "../store/selector/userselector"
 import style from "../styles/messages.module.css"
 interface MessageProps {
-    id: string
     time: string
     msg: string
     sentBy:string
