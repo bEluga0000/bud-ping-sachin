@@ -33,7 +33,7 @@ exports.root = {
     getAllUser: ({ id }, req) => __awaiter(void 0, void 0, void 0, function* () {
         const users = yield (0, get_1.getSuggestionUsers)({ id });
         if (users) {
-            return { user: users };
+            return users;
         }
     }),
     CreateUser: ({ input }, req) => __awaiter(void 0, void 0, void 0, function* () {

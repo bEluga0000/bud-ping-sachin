@@ -1,5 +1,5 @@
+import Lock from "./fieldLock";
 import Logo from "./logo";
-import SearchCompo from "./searchCompo";
 import UserProfile from "./userProfile";
 export default function NavBar({username}:{username:string})
 {
@@ -12,7 +12,7 @@ export default function NavBar({username}:{username:string})
                 <UserProfile username={username}/>
             </div>
             <div>
-                <SearchCompo/>
+                <Lock/>
             </div>
         </div>
     )

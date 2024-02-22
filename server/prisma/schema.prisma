@@ -34,6 +34,6 @@ model Message {
   time     DateTime @default(now())
   sentBy   String
   roomId   String
-  roomIn   Room @relation(fields: [roomId], references: [id])
-  userSent User @relation(fields: [sentBy], references: [id])
+  roomIn   Room @relation(fields: [roomId], references: [id],onDelete: Cascade)
+  userSent User @relation(fields: [sentBy], references: [id],onDelete: Cascade)
 }

@@ -46,6 +46,7 @@ const resolver_1 = require("./resolver");
 const variable_1 = require("./zod/variable");
 const update_1 = require("./query/update");
 const wsConnection_1 = require("./ws/wsConnection");
+const get_1 = require("./query/get");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 const fs = require('fs');
@@ -96,6 +97,23 @@ app.patch("/removeFriend", (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         else {
             res.status(403).json({ message: "error in removing friend" });
+        }
+    }
+}));
+app.post("/unlock", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const parsedInputs = variable_1.unlockVars.safeParse(req.body);
+    if (!parsedInputs.success) {
+        res.status(403).json({ message: "Enter the valid inputs" });
+    }
+    else {
+        // username is sending as gmail as of now
+        const { username, password } = parsedInputs.data;
+        const user = yield (0, get_1.getUserByEmail)(username, password);
+        if (user) {
+            res.status(201).json({ id: user.id, username: user.username });
+        }
+        else {
+            res.status(404).json({ message: "User not found" });
         }
     }
 }));

@@ -33,42 +33,55 @@ export default function Chat() {
     const [websocket, setWebsocket] = useState<WebSocket | null>(null)
     // making the ws connection
     useEffect(() => {
-        if (!websocket) {
-            const ws = new WebSocket(`${WS_URL}`)
-            if (currentUserId) {
+        let ws: WebSocket | null = null;
+
+        const initWebSocket = () => {
+            ws = new WebSocket(`${WS_URL}`);
+            if (currentUserId && roomIds && ws) {
                 ws.onopen = () => {
-                    ws.send(JSON.stringify({
-                        type: "join",
+                    ws?.send(
+                        JSON.stringify({
+                            type: "join",
+                            payload: {
+                                id: currentUserId,
+                                roomId: roomIds,
+                            },
+                        })
+                    );
+                };
+
+                ws.onmessage = (event) => {
+                    const data: WebsocketMsgProps = JSON.parse(event.data);
+                    if (data.type === "message") {
+                        setMessages((prevMessages) => [...prevMessages, data.payload]);
+                        return data.payload;
+                    }
+                };
+            }
+        };
+
+        const cleanupWebSocket = () => {
+            if (ws) {
+                ws.send(
+                    JSON.stringify({
+                        type: "exit",
                         payload: {
                             id: currentUserId,
-                            roomId: roomIds
-                        }
-                    }))
-                }
-                ws.onmessage = (event) => {
-                    const data: WebsocketMsgProps = JSON.parse(event.data)
-                    if (data.type === 'message') {
-                        setMessages((prevMessages) => [...prevMessages, data.payload])
-                        return data.payload
-                    }
-                }
-                setWebsocket(ws)
+                            roomId: roomIds,
+                        },
+                    })
+                );
+                ws.close();
             }
+        };
 
-            return () => {
-
-                ws.close()
-                ws.send(JSON.stringify({
-                    type: "exit",
-                    payload: {
-                        id: currentUserId,
-                        roomId: roomIds
-                    }
-                }))
-            }
+        // Initialize WebSocket
+        if (!websocket) {
+            initWebSocket();
+            setWebsocket(ws);
         }
-
-    }, [roomId, currentUserId])
+        return cleanupWebSocket;
+    }, [roomIds, currentUserId]);
     useEffect(() => {
         const init = async (id: string) => {
             setLoading(true)

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllRooms = exports.getAllUser = exports.getSuggestionUsers = exports.getRoom = exports.getUser = void 0;
+exports.getAllRooms = exports.getAllUser = exports.getSuggestionUsers = exports.getRoom = exports.getUserByEmail = exports.getUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,6 +34,22 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUser = getUser;
+const getUserByEmail = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(email,password)
+    const user = yield prisma.user.findUnique({
+        where: {
+            email,
+            password
+        }
+    });
+    if (user) {
+        return user;
+    }
+    else {
+        return null;
+    }
+});
+exports.getUserByEmail = getUserByEmail;
 const getRoom = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const room = yield prisma.room.findUnique({
         where: {
@@ -103,8 +119,8 @@ const getAllRooms = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllRooms = getAllRooms;
 // getSuggestionUsers({id:"clrrrzkww0000wbfj5sjr7sv4"})
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
-// getAllUser()
-(0, exports.getAllRooms)();
+(0, exports.getAllUser)();
+// getAllRooms()
 // getRoom('46614326-c6e6-4520-93d2-9ed558de5319')
 // users
 // [

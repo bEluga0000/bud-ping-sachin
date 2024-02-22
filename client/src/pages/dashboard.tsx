@@ -9,10 +9,12 @@ import { useEffect, useState} from "react";
 import { chain } from "../consfig";
 import { CircularProgress } from "@mui/material";
 import { userState } from "../store/atom/user";
+import { userIdState } from "../store/selector/userselector";
 // import axios from "axios";
 // import Chat from "./chat";
 export default function Dashboard()
 {
+    const currentUserId = useRecoilValue(userIdState)
     const [isLoading,setIsLoading] = useState<boolean>(false)
     const [username,setUsername] = useState<string>("")
     const chatSection = useRecoilValue(isChatSection)
@@ -43,9 +45,12 @@ export default function Dashboard()
         // Jhonson
         // init("clrrupm77000046gexb5qc96i");
         // Sachin
-        init("clrrrzkww0000wbfj5sjr7sv4") 
+        if(currentUserId)
+        {
+
+            init(currentUserId) 
+        }
     },[])
-    
     if(isLoading)
     {
         return <CircularProgress/>

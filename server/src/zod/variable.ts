@@ -7,3 +7,7 @@ export const requestVars = z.object({
     fromId:z.string(),
     toId:z.string()
 })
+export const unlockVars = z.object({
+    username:z.string(),
+    password:z.string()
+})

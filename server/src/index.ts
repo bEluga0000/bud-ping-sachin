@@ -6,9 +6,10 @@ import {WebSocketServer} from "ws"
 import {graphqlHTTP} from 'express-graphql'
 import {buildSchema} from 'graphql'
 import { root } from "./resolver"
-import {  friendVars, requestVars } from "./zod/variable"
+import {  friendVars, requestVars, unlockVars } from "./zod/variable"
 import { addFriend, removeFriend, setRequests } from "./query/update"
 import { wsOnconnection } from "./ws/wsConnection"
+import { getUserByEmail } from "./query/get"
 
 const app = express()
 app.use(express.json())
@@ -23,6 +24,7 @@ wss.on('connection',(ws,req)=>{
     ws.send("connected sucessfully")
     wsOnconnection(ws,req)
 })
+
 
 app.use('/graphql',graphqlHTTP({
     schema,
@@ -75,6 +77,27 @@ app.patch("/removeFriend",async(req,res)=>{
     }
 })
 
+app.post("/unlock",async(req,res)=>{
+    const parsedInputs = unlockVars.safeParse(req.body)
+    if(!parsedInputs.success)
+    {
+        res.status(403).json({message:"Enter the valid inputs"})
+    }
+    else
+    {
+        // username is sending as gmail as of now
+        const {username,password} = parsedInputs.data
+        const user = await getUserByEmail(username,password)
+        if(user)
+        {
+            res.status(201).json({id:user.id,username:user.username})
+        }
+        else
+        {
+            res.status(404).json({message:"User not found"})
+        }
+    }
+})
 app.post("/sendRequest",async(req,res)=>{
     const parsedInputs = requestVars.safeParse(req.body)
     if(!parsedInputs.success)

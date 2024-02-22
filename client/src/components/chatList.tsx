@@ -66,7 +66,7 @@ export default function ChatList()
         <div style={{overflowY:"scroll"}} className={style.room}>
             {
                 rooms.map((room)=>{
-                    return <SingleChat roomId={room.id} username={ room.subscribedUser[0].username ===username ? room.subscribedUser[1].username:username }/>
+                    return <SingleChat roomId={room.id} username={ room.subscribedUser[0].username ===username ? room.subscribedUser[1].username:room.subscribedUser[0].username }/>
                 })
             }
             

@@ -27,7 +27,7 @@ export const root = {
         const users = await getSuggestionUsers({id})
         if(users)
         {
-            return {user:users}
+            return users
         }
     },
     CreateUser: async({ input }:{ input:UserInputProps},req:any)=>{

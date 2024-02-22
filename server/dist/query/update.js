@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setRequests = exports.removeFriend = exports.addFriend = void 0;
+exports.setRequests = exports.removeFriend = exports.removeFriends = exports.addFriend = void 0;
 const client_1 = require("@prisma/client");
 const create_1 = require("./create");
 const prisma = new client_1.PrismaClient();
@@ -55,7 +55,7 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addFriend = addFriend;
-const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
+const removeFriends = (input) => __awaiter(void 0, void 0, void 0, function* () {
     // todo need to optimise the code if possible directly from the prisma do else we can optimise like this like getuser FUnction and fileter function and may more which are repeated more
     const user1 = yield prisma.user.findUnique({
         where: {
@@ -68,6 +68,18 @@ const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     if (user2 && user1) {
+        //deleting the rooms
+        const room = yield prisma.room.deleteMany({
+            where: {
+                subscribedUser: {
+                    every: {
+                        id: {
+                            in: [input.user1Id, input.user2Id]
+                        }
+                    }
+                }
+            }
+        });
         const updatedUser1Friends = user1.friends.filter((id) => { id !== input.user2Id; });
         const updatedUser2Friends = user2.friends.filter((id) => { id !== input.user1Id; });
         // removing the friends
@@ -87,20 +99,59 @@ const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
                 friends: { set: updatedUser2Friends }
             }
         });
-        //deleting the rooms
-        const room = yield prisma.room.deleteMany({
-            where: {
-                subscribedUser: {
-                    some: {
-                        id: {
-                            in: [input.user1Id, input.user2Id]
-                        }
-                    }
-                }
-            }
-        });
         // console.log(updatedUser2,updatedUser1,room)
         return room;
+    }
+});
+exports.removeFriends = removeFriends;
+const removeFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
+    const user1 = yield prisma.user.findUnique({
+        where: {
+            id: input.user1Id,
+        },
+    });
+    const user2 = yield prisma.user.findUnique({
+        where: {
+            id: input.user2Id,
+        },
+    });
+    if (user1 && user2) {
+        const updatedUser1Friends = user1.friends.filter(id => id !== input.user2Id);
+        const updatedUser2Friends = user2.friends.filter(id => id !== input.user1Id);
+        // Update user friends
+        const updatedUser1 = yield prisma.user.update({
+            where: {
+                id: input.user1Id,
+            },
+            data: {
+                friends: {
+                    set: updatedUser1Friends,
+                },
+            },
+        });
+        const updatedUser2 = yield prisma.user.update({
+            where: {
+                id: input.user2Id,
+            },
+            data: {
+                friends: {
+                    set: updatedUser2Friends,
+                },
+            },
+        });
+        // Delete rooms where both users are subscribed
+        const deletedRooms = yield prisma.room.deleteMany({
+            where: {
+                subscribedUser: {
+                    every: {
+                        id: {
+                            in: [input.user1Id, input.user2Id],
+                        },
+                    },
+                },
+            },
+        });
+        return deletedRooms;
     }
 });
 exports.removeFriend = removeFriend;

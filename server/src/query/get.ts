@@ -22,6 +22,23 @@ export const getUser = async (id:string)=>{
         return null
     }
 }
+export const getUserByEmail =async (email:string,password:string)=>{
+    // console.log(email,password)
+    const user = await prisma.user.findUnique({
+        where:{
+            email,
+            password
+        }
+    })
+    if(user)
+    {
+        return user
+    }
+    else
+    {
+        return null
+    }
+}
 export const getRoom = async(id:string)=>{
     const room = await prisma.room.findUnique({
         where:{
@@ -92,8 +109,8 @@ export const getAllRooms = async()=>{
 }
 // getSuggestionUsers({id:"clrrrzkww0000wbfj5sjr7sv4"})
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
-// getAllUser()
-getAllRooms()
+getAllUser()
+// getAllRooms()
 // getRoom('46614326-c6e6-4520-93d2-9ed558de5319')
 
 // users

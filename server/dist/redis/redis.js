@@ -67,8 +67,9 @@ class RedisSubscriptionManager {
             this.publish(room, {
                 type: "message",
                 payload: {
-                    username,
-                    message
+                    sentBy: username,
+                    msg: message,
+                    time: new Date()
                 }
             });
         });
