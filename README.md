@@ -28,6 +28,17 @@ Bud Ping is a Chrome extension designed to provide a simple and efficient 1-1 ch
   - Redis
 
 ## Project Structure
+`bud-ping/
+|-- client/ # Frontend code
+| |-- src/
+| |-- ...
+
+|-- server/ # Backend code
+| |-- src/
+| |-- ...
+
+|-- ...
+`
 
 The project is organized into two main folders - `client` for the frontend and `server` for the backend. Additional folders and files are structured based on the specific needs of each part.
 
