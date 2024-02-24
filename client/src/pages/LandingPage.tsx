@@ -19,7 +19,6 @@ export default function LandingPage() {
         for (let cookie of cookies) {
             const [cookieName, cookieValue] = cookie.split('=')
             if (cookieName.trim() === name) {
-                console.log("I am clear to send the value", decodeURIComponent(cookieValue))
                 return decodeURIComponent(cookieValue)
             }
         }
@@ -28,18 +27,15 @@ export default function LandingPage() {
     useEffect(() => {
         const init = async () => {
             const usernamecookievalue = getCookie("username")
-            console.log(usernamecookievalue)
             const passwordCookievalue = getCookie("password")
-            console.log(passwordCookievalue)
             if (!usernamecookievalue || !passwordCookievalue) {
-                console.log("No cookies or avialable")
                 setIsLoading(false)
             }
             else {
                 setUsernameCookie(usernamecookievalue)
-                console.log(usernameCookie)
+
                 setPasswordCookie(passwordCookievalue)
-                console.log(passwordCookie)
+
                 const res = await axios.post(`${BASE_URL}/unlock`, {
                     username: usernameCookie,
                     password: passwordCookie
@@ -53,12 +49,12 @@ export default function LandingPage() {
                         navigate(`/dashboard`)
                     }
                     else {
-                        console.log("Bcz of the no user")
+
                         setIsLoading(false)
                     }
                 }
                 else {
-                    console.log("bcz of the no data recived from server")
+
                     setIsLoading(false)
                 }
             }
@@ -66,11 +62,11 @@ export default function LandingPage() {
 
         init()
 
-    }, [usernameCookie,passwordCookie])
+    }, [usernameCookie, passwordCookie])
     if (isLoading) {
         return <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-                <LandingPageNavBar/>
+                <LandingPageNavBar />
                 <hr />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "center", height: "101vh", gap: "4rem" }}>
@@ -81,7 +77,7 @@ export default function LandingPage() {
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
             <div>
-                <LandingPageNavBar/>
+                <LandingPageNavBar />
                 <hr />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "center", height: "101vh", gap: "4rem" }}>

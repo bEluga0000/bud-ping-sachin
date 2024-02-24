@@ -6,64 +6,33 @@ import LandingPage from "../pages/LandingPage"
 import { userIdState } from "../store/selector/userselector"
 import style from "../styles/allPages.module.css"
 import SingleFriend from "./singleFriend"
-interface FriendProps{
-    username:string
-    id:string
+interface FriendProps {
+    username: string
+    id: string
 }
-export default function FriendsList(){
-    const[friends,setFriends] = useState<string[]>([])
-    const [friend,setFriend] = useState<FriendProps[]>([])
-    const [isLoading,setIsLoading] = useState<boolean>(false)
+export default function FriendsList() {
+    const [friends, setFriends] = useState<string[]>([])
+    const [friend, setFriend] = useState<FriendProps[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const currentUserId = useRecoilValue(userIdState)
-    if(!currentUserId)
-    {
-        return <LandingPage/>
+    if (!currentUserId) {
+        return <LandingPage />
     }
-    useEffect(()=>{
-        const init =async ()=>{
+    useEffect(() => {
+        const init = async () => {
             setIsLoading(true)
             const oneuser = await chain("query")({
                 getUser: [{
-                    id:currentUserId
+                    id: currentUserId
                 }, {
                     friends: true
                 }]
             })
-            if(oneuser.getUser && oneuser.getUser.friends !== undefined)
-            {
+            if (oneuser.getUser && oneuser.getUser.friends !== undefined) {
                 setFriends(oneuser.getUser.friends)
             }
-            if(friends && friends.length > 0)
-            {
-                // console.log("I")
-                friends.map(async(id)=>{
-                    const user = await chain("query")({
-                        getUser:[{
-                            id
-                        },{
-                            username:true,
-                            id:true
-                            
-                        }]
-                    })
-                    if(user.getUser)
-                    {
-                        const oneuser = user.getUser 
-                        // console.log(friend)
-                        setFriend((prevFriend)=>[...prevFriend,oneuser])
-                    }
-                })
-            }
-            setIsLoading(false)
-        }
-        init();
-    },[currentUserId])
-
-    useEffect(()=>{
-        const init =async ()=>{
-            setIsLoading(true)
             if (friends && friends.length > 0) {
-                // console.log("I")
+
                 friends.map(async (id) => {
                     const user = await chain("query")({
                         getUser: [{
@@ -76,7 +45,34 @@ export default function FriendsList(){
                     })
                     if (user.getUser) {
                         const oneuser = user.getUser
-                        // console.log(friend)
+
+                        setFriend((prevFriend) => [...prevFriend, oneuser])
+                    }
+                })
+            }
+            setIsLoading(false)
+        }
+        init();
+    }, [currentUserId])
+
+    useEffect(() => {
+        const init = async () => {
+            setIsLoading(true)
+            if (friends && friends.length > 0) {
+
+                friends.map(async (id) => {
+                    const user = await chain("query")({
+                        getUser: [{
+                            id
+                        }, {
+                            username: true,
+                            id: true
+
+                        }]
+                    })
+                    if (user.getUser) {
+                        const oneuser = user.getUser
+
                         setFriend((prevFriend) => [...prevFriend, oneuser])
                     }
                 })
@@ -84,21 +80,19 @@ export default function FriendsList(){
             setIsLoading(false)
         }
         init()
-    },[friends])
-    if(isLoading)
-    {
-        return <CircularProgress/>
+    }, [friends])
+    if (isLoading) {
+        return <CircularProgress />
     }
-    if(friend.length == 0 && !isLoading)
-    {
+    if (friend.length == 0 && !isLoading) {
         return <div className={style.room}>
             <Typography>Make friends and expirence</Typography>
         </div>
     }
     return <div className={style.room}>
         {
-            friend.map((frnd)=>{
-                return <SingleFriend username={frnd.username} id={frnd.id}/>
+            friend.map((frnd) => {
+                return <SingleFriend username={frnd.username} id={frnd.id} />
             })
         }
     </div>

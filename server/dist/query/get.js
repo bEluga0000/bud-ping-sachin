@@ -26,7 +26,6 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     if (user) {
-        // console.log(user)
         return { user, room: user.rooms };
     }
     else {
@@ -35,7 +34,6 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getUser = getUser;
 const getUserByEmail = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(email,password)
     const user = yield prisma.user.findUnique({
         where: {
             email,
@@ -60,7 +58,6 @@ const getRoom = (id) => __awaiter(void 0, void 0, void 0, function* () {
             messages: true
         }
     });
-    // console.log(room)
     return { room: room, subscribedUsers: room.subscribedUser, messages: room.messages };
 });
 exports.getRoom = getRoom;
@@ -84,12 +81,9 @@ const getSuggestionUsers = ({ id }) => __awaiter(void 0, void 0, void 0, functio
         if (friendsforSuggestion.length === 0) {
             return null;
         }
-        console.log("I ma runningjskdhaj");
-        console.log(friendsforSuggestion);
         return friendsforSuggestion;
     }
     catch (e) {
-        // console.log(e)
         return null;
     }
 });
@@ -100,7 +94,6 @@ const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
             rooms: true
         }
     });
-    console.log(users);
 });
 exports.getAllUser = getAllUser;
 const getAllRooms = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -114,12 +107,11 @@ const getAllRooms = () => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     // return { paper, question: (paper as any).questions }
-    console.log(rooms.subscribedUser, rooms);
 });
 exports.getAllRooms = getAllRooms;
 // getSuggestionUsers({id:"clrrrzkww0000wbfj5sjr7sv4"})
 // getUser("clrrrzkww0000wbfj5sjr7sv4")
-(0, exports.getAllUser)();
+// getAllUser()
 // getAllRooms()
 // getRoom('46614326-c6e6-4520-93d2-9ed558de5319')
 // users

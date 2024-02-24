@@ -13,7 +13,6 @@ exports.storeMessages = exports.createRoom = exports.createUser = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createUser = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("i am running");
     const user = yield prisma.user.create({
         data: {
             username: inputs.username,
@@ -22,7 +21,6 @@ const createUser = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
     if (user) {
-        console.log(user);
         return user;
     }
     else {
@@ -59,7 +57,6 @@ const storeMessages = (inputs) => __awaiter(void 0, void 0, void 0, function* ()
         }
     });
     if (message) {
-        console.log(message);
         return message.id;
     }
     else {

@@ -31,11 +31,8 @@ export const root = {
         }
     },
     CreateUser: async({ input }:{ input:UserInputProps},req:any)=>{
-        console.log(1)
         const user = await createUser({username:input.username,password:input.username,email:input.email})
-        console.log(2)
         if(user){
-            console.log(user)
             return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends, requests: user.requests }
         }
         else

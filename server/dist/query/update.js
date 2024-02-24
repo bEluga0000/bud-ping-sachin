@@ -48,9 +48,6 @@ const addFriend = (input) => __awaiter(void 0, void 0, void 0, function* () {
             }
         });
         const room = yield (0, create_1.createRoom)({ user1Id: updatedUser1.id, user2Id: updatedUser2.id });
-        // console.log(room)
-        // console.log(updatedUser1)
-        // console.log(updatedUser2.friends,updatedUser2.id)
         return room;
     }
 });
@@ -99,7 +96,6 @@ const removeFriends = (input) => __awaiter(void 0, void 0, void 0, function* () 
                 friends: { set: updatedUser2Friends }
             }
         });
-        // console.log(updatedUser2,updatedUser1,room)
         return room;
     }
 });
@@ -163,7 +159,6 @@ const setRequests = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const alreadyRequested = toUser === null || toUser === void 0 ? void 0 : toUser.requests.includes(inputs.fromId);
     if (alreadyRequested) {
-        console.log("error is because of me");
         return null;
     }
     else {
@@ -175,7 +170,6 @@ const setRequests = (inputs) => __awaiter(void 0, void 0, void 0, function* () {
                     requests: [...toUser.requests, inputs.fromId]
                 }
             });
-            // console.log(updatedUser)
             return updatedUser;
         }
     }

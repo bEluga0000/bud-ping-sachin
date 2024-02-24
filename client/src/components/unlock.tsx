@@ -53,7 +53,6 @@ export default function Unlock() {
             {
                 setPassword(passwordCookieValue)
             }
-        console.log(usernameCookieValue, passwordCookieValue)
     }, [])
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>

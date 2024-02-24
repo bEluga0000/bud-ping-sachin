@@ -101,7 +101,6 @@ export default function Chat() {
                 }]
             })
             if (room.getRoom) {
-                console.log(room.getRoom)
                 if (room.getRoom.messages && room.getRoom.messages.length > 0) {
                     setMessages(room.getRoom.messages)
                 }
@@ -110,9 +109,7 @@ export default function Chat() {
             }
             setLoading(false)
         }
-        console.log(roomIds)
         if (roomIds) {
-            console.log("I am getting the roomId loser")
             init(roomIds)
         }
     }, [roomIds])

@@ -37,11 +37,8 @@ exports.root = {
         }
     }),
     CreateUser: ({ input }, req) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log(1);
         const user = yield (0, create_1.createUser)({ username: input.username, password: input.username, email: input.email });
-        console.log(2);
         if (user) {
-            console.log(user);
             return { id: user.id, username: user.username, email: user.email, userLink: user.userLink, password: user.password, friends: user.friends, requests: user.requests };
         }
         else {
